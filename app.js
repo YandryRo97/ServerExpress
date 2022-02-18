@@ -58,6 +58,19 @@ app.get("/users/:cedula?",async function (req, res){
 
 });
 
+app.get("/listar/:cedula?",async function (req, res){
+  const cedula =  req.query.cedula;
+  console.log(cedula);
+  pool.query('SELECT * FROM marcacion WHERE cedula = $1', [cedula], (error, results1) => {
+    if (error) {
+      throw error
+    }
+    res.status(200).json(results1.rows)
+    console.log(results1.rows);
+  })
+
+});
+
 app.post("/marcacion/:cedula?:nombre?:fecha?",async function (req, res){
   const cedula =  req.query.cedula;
   const nombre =  req.query.nombre;
@@ -75,8 +88,8 @@ app.post("/marcacion/:cedula?:nombre?:fecha?",async function (req, res){
 app.post("/sendVoices/:cedula?",async function (req, res)  {
     let myfile;
     let youpath;
-    const cedula =  req.body;
-  
+    const cedula =  req.body.cedula;
+    console.log(cedula)
     if (fs.existsSync(cedula)) {
       myfile = req.files.formUpload;
       youpath = __dirname + "/" + cedula + "/" + myfile.name;
